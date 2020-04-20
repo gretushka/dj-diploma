@@ -1,0 +1,127 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}Раздел {{ category }}{% endblock %}
+
+{% block content %}
+
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <a class="navbar-brand" href="/">Просто магазин</a>
+  <img src="{% static 'logo.svg'%}" alt="" width="42" height="42">
+  <button class="navbar-toggler" type="button" data-toggle="collapse"
+          data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
+          aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/">
+          Главная</a>
+      </li>
+      {% for category in maincategories %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="/category/{{ category.slug }}" id="dropdown01"
+           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{ category }}</a>
+        <div class="dropdown-menu" aria-labelledby="dropdown01">
+           {% for subcategory in subcategories %}
+              {% if subcategory.parent_category_id == category.id %}
+                <a class="dropdown-item" href="/category/{{ subcategory.slug }}">
+                {{ subcategory }}</a>
+                <br>
+              {% endif %}
+          {% endfor %}
+            <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="/category/{{ category.slug }}">{{ category }}</a>
+        </div>
+      </li>
+      {% endfor %}
+
+      {% for category in categories %}
+      <li class="nav-item">
+        <a class="nav-link" href="/category/{{ category.slug }}">
+          {{ category }}</a>
+      </li>
+      {% endfor %}
+      </ul>
+      {% if request.user.is_authenticated %}
+        <a class="btn btn-outline-success my-2 my-sm-0" role="button"
+         href="/cart">
+         Корзина</a>
+
+        <a class="btn btn-outline-success my-2 my-sm-0" role="button"
+         href="/logout">
+         Выйти</a>
+
+        {% else %}
+        <a class="btn btn-outline-success my-2 my-sm-0" role="button"
+         href="/login">
+         Войти</a>
+
+        <a class="btn btn-outline-success my-2 my-sm-0" role="button"
+         href="/signup">
+         Зарегистрироваться</a>
+
+        {% endif %}
+
+  </div>
+</nav>
+
+
+<main role="main">
+
+  <div class="container">
+    <!-- Example row of columns -->
+
+    <h1>{{ category_item.name }}</h1>
+
+    <div class="row">
+
+
+      <div class="col-md-4">
+          {% for subcategory in subcategories_for_item %}
+          <a href="/category/{{ subcategory.slug }}"> {{ subcategory.name }}</a>
+          {% endfor %}
+
+          <div class="row">
+                  {% for product in products %}
+                  <div class="col-md-4">
+                    <h2>{{ product.name }}</h2>
+
+                    <a>
+
+                      <img src="{% get_media_prefix %}{{ product.image }}" alt="" width="120">
+
+                    </a>
+
+                    <a class="btn btn-outline-success my-2 my-sm-0" role="button"
+                     href="/product/{{ product.slug }}">
+                     Подробнее »</a>
+
+                  </div>
+                  {% endfor %}
+          </div>
+          <div>
+            {% if prev_page_url %}<a class="button button-primary" href="{{ prev_page_url }}">⟵</a>{% endif %}
+            <a class="button disabled" href="">{{ current_page }}</a>
+            {% if next_page_url %}<a class="button button-primary" href="{{ next_page_url }}">⟶</a>{% endif %}
+          </div>
+
+
+
+      </div>
+
+
+    </div> <!-- /container -->
+
+  </div>
+</main>
+
+<hr>
+<footer class="container">
+  <p>© Просто магазин 2018</p>
+</footer>
+
+{% endblock %}

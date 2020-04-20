@@ -1,0 +1,153 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% load my_filters %}
+
+{% block title %}Товар {{ product.name }}{% endblock %}
+
+{% block content %}
+
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <a class="navbar-brand" href="/">Просто магазин</a>
+  <img src="{% static 'logo.svg'%}" alt="" width="42" height="42">
+  <button class="navbar-toggler" type="button" data-toggle="collapse"
+          data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
+          aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/">
+          Главная</a>
+      </li>
+      {% for category in maincategories %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="/category/{{ category.slug }}" id="dropdown01"
+           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{ category }}</a>
+        <div class="dropdown-menu" aria-labelledby="dropdown01">
+           {% for subcategory in subcategories %}
+              {% if subcategory.parent_category_id == category.id %}
+                <a class="dropdown-item" href="/category/{{ subcategory.slug }}">
+                {{ subcategory }}</a>
+                <br>
+              {% endif %}
+          {% endfor %}
+          <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="/category/{{ category.slug }}">{{ category }}</a>
+        </div>
+
+      </li>
+      {% endfor %}
+
+      {% for category in categories %}
+      <li class="nav-item">
+        <a class="nav-link" href="/category/{{ category.slug }}">
+          {{ category }}</a>
+      </li>
+      {% endfor %}
+      </ul>
+      {% if request.user.is_authenticated %}
+        <a class="btn btn-outline-success my-2 my-sm-0" role="button"
+         href="/cart">
+         Корзина</a>
+
+        <a class="btn btn-outline-success my-2 my-sm-0" role="button"
+         href="/logout">
+         Выйти</a>
+
+        {% else %}
+        <a class="btn btn-outline-success my-2 my-sm-0" role="button"
+         href="/login">
+         Войти</a>
+
+        <a class="btn btn-outline-success my-2 my-sm-0" role="button"
+         href="/signup">
+         Зарегистрироваться</a>
+
+        {% endif %}
+
+  </div>
+</nav>
+
+<main role="main">
+
+
+  <div class="container mt-3">
+    <!-- Example row of columns -->
+    <div class="row">
+      <div class="col-md-12">
+        <h2>{{ product.name }}</h2> {% for i in product.rating|times %}★{% endfor %}
+            {% if ordered %}
+               <h2>Успешно добавлено в корзину</h2>
+            {% endif %}
+
+        <img src="{% get_media_prefix %}{{ product.image }}" width="120">
+
+        <p>{{ product.description|safe }}</p>
+        <br>
+        <p>Для вас лучшая цена: {{ product.price }} рублей</p>
+        {% if product.quantity %}
+        {% if request.user.is_authenticated %}
+        <form method="post" action="{% url 'product_detail' product.slug %}">
+             {% csrf_token %}
+             {{ count_form }}
+              <button type="submit" name="Cart" class="btn btn-primary">Добавить в корзину »</button>
+        </form>
+        {% else %}
+        <h2> Авторизуйтесь, чтобы купить </h2>
+        {% endif %}
+        {% else %}
+        <h2> Товар пока недоступен к заказу </h2>
+        {% endif %}
+      </div>
+    </div>
+    {% if reviews.count %}
+    <hr>
+    <h4>Отзывы:</h4>
+    <ul>
+        {% for review in reviews %}
+            <li>{% for i in review.rating|times %}★{% endfor %}
+              <p>{{review.text}}</p></li>
+        {% endfor %}
+    </ul>
+
+    {% endif %}
+    <hr>
+    {% if request.user.is_authenticated and not is_review_exist %}
+    <div class="row">
+      <div class="col-lg-6 col-md-8 col-sm-12">
+        <h6>Вы можете оставить отзыв</h6>
+
+        <form action="{% url 'product_detail' product.slug %}" method="post">
+          {% csrf_token %}
+          {{ review_form.non_field_errors }}
+          <div class="fieldWrapper">
+          {{ review_form.text.errors }}
+          {{ review_form.text }}
+          </div>
+          <div class="fieldWrapper">
+          {{ review_form.rating.errors }}
+          {% for radio in review_form.rating %}
+          {{ radio }}
+          {% endfor %}
+          </div>
+          <button type="submit" name="Feedback" class="btn btn-primary">Отправить отзыв</button>
+        </form>
+
+      </div>
+    </div>
+    {% endif %}
+
+  </div> <!-- /container -->
+
+
+</main>
+
+<hr>
+<footer class="container">
+  <p>© Просто магазин 2018</p>
+</footer>
+
+{% endblock %}
