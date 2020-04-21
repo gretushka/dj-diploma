@@ -84,8 +84,9 @@
           {% for subcategory in subcategories_for_item %}
           <a href="/category/{{ subcategory.slug }}"> {{ subcategory.name }}</a>
           {% endfor %}
-
+          {% if products.count %}
           <div class="row">
+
                   {% for product in products %}
                   <div class="col-md-4">
                     <h2>{{ product.name }}</h2>
@@ -108,6 +109,11 @@
             <a class="button disabled" href="">{{ current_page }}</a>
             {% if next_page_url %}<a class="button button-primary" href="{{ next_page_url }}">⟶</a>{% endif %}
           </div>
+          {% else %}
+          <div class="alert alert-dark" role="alert">
+           Тут пока ничего нет! Но скоро появится ;)
+          </div>
+          {% endif %}
 
 
 
