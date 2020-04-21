@@ -91,22 +91,22 @@
       <ul class="list-group mb-3">
         {% for product in cart.products.all %}
         <li class="list-group-item d-flex justify-content-between lh-condensed">
-          <div>
-            <h6 class="my-0">{{ product.name }} {{ product.price }} руб.</h6>
+          <div class="row">
+            {{ product.name }} {{ product.price }} руб.  
             <form method="post" action="{% url 'cart' %}">
               {% csrf_token %}
-               <button type="submit" name="minus{{ product.slug }}" class="btn btn-secondary">-</button>
+               <button type="submit" name="minus{{ product.slug }}" class="btn btn-secondary btn-sm">-</button>
             </form>
-            <br>
+
             {% for fullness in product.fullness.all %}
             {% if fullness.cart.id == cart.id %}
-            <h6>{{ fullness.quantity }}</h6>
+            {{ fullness.quantity }}
             {% endif %}
             {% endfor %}
-            <br>
+
             <form method="post" action="{% url 'cart' %}">
               {% csrf_token %}
-               <button type="submit" name="plus{{ product.slug }}" class="btn btn-secondary">+</button>
+               <button type="submit" name="plus{{ product.slug }}" class="btn btn-secondary btn-sm">+</button>
             </form>
           </div>
         </li>
@@ -132,7 +132,10 @@
   </div>
 
 </div>
-
+<hr>
+<footer class="container">
+  <p>© Просто магазин 2020</p>
+</footer>
 {% endblock %}
 
 
