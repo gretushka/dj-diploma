@@ -20,6 +20,7 @@
         <a class="nav-link" href="/">
           Главная</a>
       </li>
+
       {% for category in maincategories %}
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="/category/{{ category.slug }}" id="dropdown01"
@@ -30,7 +31,6 @@
               {% if subcategory.parent_category_id == category.id %}
                 <a class="dropdown-item" href="/category/{{ subcategory.slug }}">
                 {{ subcategory }}</a>
-                <br>
               {% endif %}
           {% endfor %}
             <div class="dropdown-divider"></div>
@@ -80,7 +80,7 @@
     <div class="row">
 
 
-      <div class="col-md-4">
+      <div class="container mb-5">
           {% for subcategory in subcategories_for_item %}
           <a href="/category/{{ subcategory.slug }}"> {{ subcategory.name }}</a>
           {% endfor %}

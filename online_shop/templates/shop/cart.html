@@ -30,7 +30,6 @@
               {% if subcategory.parent_category_id == category.id %}
                 <a class="dropdown-item" href="/category/{{ subcategory.slug }}">
                 {{ subcategory }}</a>
-                <br>
               {% endif %}
           {% endfor %}
           <div class="dropdown-divider"></div>

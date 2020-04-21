@@ -31,7 +31,6 @@
               {% if subcategory.parent_category_id == category.id %}
                 <a class="dropdown-item" href="/category/{{ subcategory.slug }}">
                 {{ subcategory }}</a>
-                <br>
               {% endif %}
           {% endfor %}
           <div class="dropdown-divider"></div>
@@ -78,12 +77,12 @@
     <!-- Example row of columns -->
     <div class="row">
       <div class="col-md-12">
-        <h2>{{ product.name }}</h2> {% for i in product.rating|times %}★{% endfor %}
+        <h2>{{ product.name }} {% for i in product.rating|times %}★{% endfor %}</h2>
             {% if ordered %}
                <h2>Успешно добавлено в корзину</h2>
             {% endif %}
 
-        <img src="{% get_media_prefix %}{{ product.image }}" width="120">
+        <img src="{% get_media_prefix %}{{ product.image }}">
 
         <p>{{ product.description|safe }}</p>
         <br>
@@ -106,16 +105,18 @@
     {% if reviews.count %}
     <hr>
     <h4>Отзывы:</h4>
-    <ul>
+
         {% for review in reviews %}
-            <li>{% for i in review.rating|times %}★{% endfor %}
-              <p>{{review.text}}</p></li>
+    <hr>
+            {% for i in review.rating|times %}★{% endfor %}
+              <p>{{review.text}}</p>
+    <br>
         {% endfor %}
-    </ul>
+
 
     {% endif %}
-    <hr>
     {% if request.user.is_authenticated and not is_review_exist %}
+    <hr>
     <div class="row">
       <div class="col-lg-6 col-md-8 col-sm-12">
         <h6>Вы можете оставить отзыв</h6>
